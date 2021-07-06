@@ -1,4 +1,5 @@
 import 'package:bytebank/components/container.dart';
+import 'package:bytebank/components/localization.dart';
 import 'package:bytebank/models/name.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/name.dart';
@@ -19,11 +20,12 @@ class DashboardContainer extends BlocContainer {
 class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final i18n = DashboardViewI18N(context);
     return Scaffold(
       appBar: AppBar(
         // misturando um blocbuilder (que é um observer de eventos) com UI
         title: BlocBuilder<NameCubit, String>(
-          builder: (context, state) => Text('Welcome $state'),
+          builder: (context, state) => Text(i18n.welcomeMessage + ' $state'),
         ),
       ),
       body: Column(
@@ -41,17 +43,17 @@ class DashboardView extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   _FeatureItem(
-                    'Transfer',
+                    i18n.transfer, //Devido a primeira forma isso fica como atributo
                     Icons.monetization_on,
                     onClick: () => _showContactsList(context),
                   ),
                   _FeatureItem(
-                    'Transaction Feed',
+                    i18n.transactionFeed(),
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    'Change name',
+                    i18n.changeName(),
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -86,6 +88,26 @@ class DashboardView extends StatelessWidget {
       ),
     );
   }
+}
+
+class DashboardViewI18N extends ViewI18N {
+  DashboardViewI18N(BuildContext context): super(context);
+
+  //Uma forma de fazer o método
+  String get transfer => localize({"pt-br": "Transferir","en" : "Transfer"});
+
+  String get welcomeMessage => localize({"pt-br": "Bem Vindo","en" : "Welcome"});
+
+  //Outra forma de fazer o mesmo que a linha acima
+  String transactionFeed() {
+    return localize({"pt-br": "Transações","en" : "Transaction Feed"});
+  }
+
+  String changeName() {
+    return localize({"pt-br": "Mudar nome","en" : "Change name"});
+  }
+
+
 }
 
 class _FeatureItem extends StatelessWidget {

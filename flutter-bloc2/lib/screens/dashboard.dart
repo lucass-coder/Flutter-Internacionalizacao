@@ -12,9 +12,10 @@ class DashboardContainer extends BlocContainer {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NameCubit("Lucas"),
-     child: I18NLoadingContainer(
-         (messages) => DashboardView(DashboardViewLazyI18N(messages)),
-     ),
+      child: I18NLoadingContainer(
+        viewKey : "dashboard",
+        creator: (messages) => DashboardView(DashboardViewLazyI18N(messages)),
+      ),
     );
   }
 }
@@ -30,7 +31,7 @@ class DashboardView extends StatelessWidget {
       appBar: AppBar(
         // misturando um blocbuilder (que é um observer de eventos) com UI
         title: BlocBuilder<NameCubit, String>(
-          builder: (context, state) => Text(_i18n.welcomeMessage + ' $state'),
+          builder: (context, state) => Text('Welcome $state'),
         ),
       ),
       body: Column(
@@ -48,17 +49,17 @@ class DashboardView extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   _FeatureItem(
-                    _i18n.transfer, //Devido a primeira forma isso fica como atributo
+                    _i18n.transfer,
                     Icons.monetization_on,
                     onClick: () => _showContactsList(context),
                   ),
                   _FeatureItem(
-                    _i18n.transactionFeed,
+                    _i18n.transaction_feed,
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    _i18n.changeName,
+                    _i18n.change_name,
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -96,37 +97,29 @@ class DashboardView extends StatelessWidget {
 }
 
 class DashboardViewLazyI18N {
-  final I18NMessages _message;
+  final I18NMessages _messages;
 
-  DashboardViewLazyI18N(this._message);
+  DashboardViewLazyI18N(this._messages);
 
-  String get transfer => _message.get("transfer");
-  String get transactionFeed => _message.get("transaction_feed");
-  String get changeName => _message.get("change_name");
-  String get welcomeMessage => _message.get("welcome_message");
+  String get transfer => _messages.get("transfer");
 
+  // _ é para constante. defina se você vai usar também para não constante!
+  String get transaction_feed => _messages.get("transaction_feed");
 
+  String get change_name => _messages.get("change_name");
 }
 
 class DashboardViewI18N extends ViewI18N {
-  DashboardViewI18N(BuildContext context): super(context);
+  DashboardViewI18N(BuildContext context) : super(context);
 
-  // Uma forma de fazer o método
-  // _ é para constante.Defina se você vai usar também para não constante!cp.2.2
-  String get transfer => localize({"pt-br": "Transferir","en" : "Transfer"});
+  String get transfer => localize({"pt-br": "Transferir", "en": "Transfer"});
 
-  String get welcomeMessage => localize({"pt-br": "Bem Vindo","en" : "Welcome"});
+  // _ é para constante. defina se você vai usar também para não constante!
+  String get transaction_feed =>
+      localize({"pt-br": "Transações", "en": "Transaction Feed"});
 
-  //Outra forma de fazer o mesmo que a linha acima
-  // String transactionFeed() {
-  //   return localize({"pt-br": "Transações","en" : "Transaction Feed"});
-  // }
-  //
-  // String changeName() {
-  //   return localize({"pt-br": "Mudar nome","en" : "Change name"});
-  // }
-
-
+  String get change_name =>
+      localize({"pt-br": "Mudar nome", "en": 'Change name'});
 }
 
 class _FeatureItem extends StatelessWidget {
@@ -135,10 +128,10 @@ class _FeatureItem extends StatelessWidget {
   final Function onClick;
 
   _FeatureItem(
-    this.name,
-    this.icon, {
-    @required this.onClick,
-  });
+      this.name,
+      this.icon, {
+        @required this.onClick,
+      });
 
   @override
   Widget build(BuildContext context) {
